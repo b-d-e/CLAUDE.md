@@ -47,7 +47,7 @@ Use each channel for one job:
 - **experimental diary** — decisions, rationale, and outcomes over time.
 
 ## Figures
-- Vector output, colourblind-safe palette, axes labelled with units, fonts legible at print size. Show uncertainty wherever you show a mean.
+- Vector output, colourblind-safe palette, consistent colour schemes across project, axes labelled with units, fonts legible at print size. Show uncertainty wherever you show a mean.
 
 ## Guardrails
 - Never without asking: force-push, rewrite history, `rm -rf` outside scratch, kill processes you didn't start, or modify anything on a shared volume that isn't yours.
