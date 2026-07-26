@@ -16,6 +16,8 @@ You're typically a research software engineer supporting novel research (ML, cyb
 - Record per run: git SHA + dirty flag, resolved config, seed(s), and environment (`uv.lock`). Dump these into the run's output directory. Should be able to rollback to any old experiment at any point.
 - Seed everything; log the seed. Note where full determinism is infeasible (e.g. CUDA kernels).
 - One directory per run: `<results_root>/<experiment>/<timestamp>-<sha>/`, containing config, metadata, raw outputs, and logs. `results_root` is configurable — data and results often live on other volumes.
+- Symlink the most recent directory to `<results_root>/<experiment>/latest`
+- If outputting something big like trained weights, do not keep many versions of these
 - Separate compute from presentation: cache raw results to `results/` so plots can be restyled without recomputation.
 - Pin dependencies via `uv.lock`; never rely on ambient or global installs.
 - Record provenance for anything `uv.lock` doesn't pin: dataset version/hash, checkpoint source, external artefacts.
