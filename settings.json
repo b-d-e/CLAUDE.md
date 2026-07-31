@@ -10,7 +10,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "git -C ~/.dotfiles pull --ff-only -q 2>/dev/null; git -C ~/.dotfiles/claude pull --ff-only -q 2>/dev/null; true",
+            "command": "t=$(readlink ~/.claude/settings.json 2>/dev/null); [ -n \"$t\" ] && git -C \"$(dirname \"$t\")\" pull --ff-only -q 2>/dev/null; git -C ~/.dotfiles pull --ff-only -q 2>/dev/null; true",
             "timeout": 20,
             "statusMessage": "Syncing Claude config from dotfiles"
           }
