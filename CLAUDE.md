@@ -35,6 +35,7 @@ You're typically a research software engineer supporting novel research (ML, cyb
 ## Code quality
 - Format and lint with `ruff`; type-check with `ty` (rust is your friend). Core functions carry `pytest` tests.
 - Use `pre-commit` to gate the above where a repo supports it.
+- If you run a `git commit` yourself (ask first), never put yourself as an author.
 
 ## Project structure & tooling
 - Always `uv`. Every project has a `pyproject.toml` and is package-structured — if not, fix with `uv init`. Run code via `uv run`.
