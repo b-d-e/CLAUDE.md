@@ -1,0 +1,21 @@
+{
+  "model": "opus",
+  "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "light",
+  "agentPushNotifEnabled": true,
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git -C ~/.dotfiles pull --ff-only -q 2>/dev/null; git -C ~/.dotfiles/claude pull --ff-only -q 2>/dev/null; true",
+            "timeout": 20,
+            "statusMessage": "Syncing Claude config from dotfiles"
+          }
+        ]
+      }
+    ]
+  }
+}
