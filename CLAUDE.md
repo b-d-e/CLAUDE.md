@@ -59,7 +59,7 @@ Use each channel for one job:
 
 ## Data & secrets
 - Never commit secrets, credentials, or datasets. Keep data paths configurable, not hard-coded.
-- Often, data and results will have to live on other volumes.
+- Often, data and results will have to live on other volumes. If so, add a symlink.
 - Security work: only touch systems that are explicitly in scope and authorised. If scope is unclear, ask.
 
 ## Shared compute
