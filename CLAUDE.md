@@ -68,7 +68,11 @@ Use each channel for one job:
 - Exclusive access is typical when the hostname contains `htc`.
 
 ## tmux (preferred deployment)
-- Deploy complex experiments in tmux, not subagents. A session is usually already active; if not, spawn one.
+- Deploy long experiment campaigns in tmux, not subagents. A session is usually already active; if not, spawn one. Short throwaway work — downloads, smoke tests, compatibility probes, one-off measurements — belongs in a background task instead: nobody watches it, and a background task notifies you on failure, which a pane does not.
 - Drive jobs by reading pane stdout and writing to pane inputs.
 - Concurrent experiments: tile the window into a grid (e.g. 2×2), with a full-width GPU monitor pane (`uvx nvitop`) below when jobs need that compute.
 - Title every pane with the job it runs; update titles and pane count as running experiments change.
+- Launch so panes self-close on success but linger on failure, otherwise a job that dies in two seconds leaves no trace: `tmux split-window ... "bash -c './runner.sh args || { echo \"FAILED rc=\$?\"; sleep 86400; }'"`. Every pane you see is then either working or broken.
+- **Verify, then report.** After any launch, confirm the process exists and its log advanced before saying it is running — `tmux send-keys` returning zero only proves tmux accepted the keystroke.
+- Add a monitor for the new log paths whenever a new class of experiment starts; monitors written for earlier runs will not match them.
+- Never pipe a long-running job through `tail`/`head` — it buffers, and a stalled job becomes indistinguishable from a dead one. Write to a log file and read that.
