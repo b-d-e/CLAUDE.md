@@ -1,9 +1,5 @@
 {
   "model": "opus",
-  "tui": "fullscreen",
-  "skipDangerousModePermissionPrompt": true,
-  "theme": "light",
-  "agentPushNotifEnabled": true,
   "hooks": {
     "SessionStart": [
       {
@@ -17,5 +13,10 @@
         ]
       }
     ]
-  }
+  },
+  "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "light",
+  "switchModelsOnFlag": false,
+  "agentPushNotifEnabled": true
 }
