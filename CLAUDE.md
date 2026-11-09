@@ -51,6 +51,37 @@ Use each channel for one job:
 - **`logs/`** — raw stdout per run.
 - **experimental diary** — decisions, rationale, and outcomes over time.
 
+## Experiment dashboard (required for research runs)
+Dashboard: https://robots.ox.ac.uk/~be/experiments/
+
+- Register **before launching** a research experiment, including queued jobs. Website builds, smoke tests and setup probes are not research runs; do not publish them to the live dashboard.
+- Read the installed reporting guide first: `~/.local/share/experiment-observatory/AGENTS.md` on Morph/Robots, or `$DATA/observatory/AGENTS.md` on HTC. In the website checkout, use `experiment-dashboard/AGENTS.md`. These describe the current schema and deployment.
+- Use the standard-library Python client `report.py` alongside that guide. On a new machine, obtain the client and guide through an existing authorised SSH route to Robots (for example `ssh robots 'cat ~/.local/share/experiment-observatory/report.py' > report.py`, and similarly for `AGENTS.md`); add `-J maths` only where that route is configured. Read the files before using them. There is **no HTTP write API, public bootstrap URL or dashboard API key**. Publication uses SSH; the browser password is not an agent credential. Never copy private keys or disable host-key checking to make reporting work.
+- Keep one stable run ID, one private report file and one owning writer per logical experiment. Before registering, check existing reports over SSH (`~/WWW/experiments/data/index.json` on Robots) to avoid duplicate runs. If an existing collector owns the report, update its registry/adapter instead of competing with it. Retrieve a lost report from the protected archive rather than recreating an existing ID.
+- Supply a descriptive name, consistent project name, hypothesis, seed, resolved configuration, repository/commit/dirty state, sanitised command and output paths. Related seeds/variants must use the same project name. Link the actual W&B **run** URL when available, never its API key.
+- After verifying the process exists and its log advances, set `running` and report the actual host, Slurm allocation, GPU IDs and process IDs. `SLURM_JOB_ID` is captured on creation inside an allocation; **resuming an existing report requires explicitly updating its allocation and host**. For workers across allocations, record all placements using the installed guide. A new allocation alone does not prove an old experiment resumed.
+- Update and publish at least every 60 seconds when feasible, using the training process or an independent read-only monitor for unattended jobs. A local update is not publication. Refresh heartbeats only after verifying the worker or scheduler; report telemetry delivery failures separately from experiment failures. Never stop or restart a healthy job just to add reporting.
+- Publish measured numeric metrics and interactive plots, with units, meaningful steps, evaluation split and source artefact. Prefer loss, accuracy or task-relevant scores over completed-item counters. `metrics` accepts up to 500 points per batch; `plot` takes structured numeric series, not arbitrary HTML. Retain full raw results in the experiment output directory. Add concise activity notes when progress, findings or blockers change, not identical polling messages.
+- On exit, verify the process/Slurm outcome **and expected outputs**, publish `completed`, `failed` or `cancelled`, and explain the result. Missing heartbeats or disappeared processes do not prove success. Allocation `COMPLETED` alone does not mean the research experiment succeeded; use `blocked` when the outcome still needs verification.
+- Verify publication succeeded and the run appears in the protected index with its current status and compute. Automatic process discovery is a fallback, not a substitute for registration, meaningful metrics, W&B links or final verification. Existing monitors may only match earlier launch scripts: add coverage whenever a new experiment class starts.
+- Keep reports, logs, private run data, passwords and hashes out of Git and public web assets. Use a Git-ignored private directory such as `.reports/`. Never bypass the publisher's HTTP protection checks.
+
+Minimal CLI example (set `REPORTER` to the installed client; use a unique real ID):
+```sh
+REPORTER="$HOME/.local/share/experiment-observatory/report.py"
+# On HTC instead: REPORTER="$DATA/observatory/report.py"
+python3 "$REPORTER" create --id myproject-seed03-YYYYMMDD \
+  --name 'My experiment · seed 03' --project 'My project' --agent research-agent
+python3 "$REPORTER" update .reports/myproject-seed03-YYYYMMDD.json --json-file - <<'JSON'
+{"status":"queued","description":"Hypothesis and experimental setup"}
+JSON
+python3 "$REPORTER" publish .reports/myproject-seed03-YYYYMMDD.json --host robots
+```
+After the worker starts, update its verified status/compute, add `metrics` and `plot`
+data using the installed guide, and publish again. If this device lacks authorised
+SSH publication, preserve the local report and report that blocker; do not claim
+it is visible on the dashboard.
+
 ## Figures
 - Vector output, colourblind-safe palette, consistent colour schemes across project, axes labelled with units, fonts legible at print size. Show uncertainty wherever you show a mean.
 
